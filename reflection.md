@@ -5,12 +5,58 @@
 **a. Initial design**
 
 - Briefly describe your initial UML design.
+My initial UML design:
+
+Owner
+Stores the pet owner's profile — name and total time available per day. Responsible for holding pet and task references.
+
+Pet
+Stores pet-specific info — name, species, age, and any health notes. Owned by Owner (composition).
+
+Task
+Represents a single care task with attributes: name, duration (minutes), priority (1–3), and frequency (daily/weekly). Responsible for describing what needs to be done and how long it takes.
+
+Scheduler
+The core logic class. Takes an Owner (with their tasks) and a time budget, and produces a Schedule. Responsible for sorting tasks by priority, fitting them within available time, and generating an explanation.
+
+Schedule
+Holds the ordered list of tasks selected for the day and the reasoning string. Responsible for displaying the final plan.
 - What classes did you include, and what responsibilities did you assign to each?
+
+Owner
+
+Stores: name, daily time available (minutes)
+Responsible for: holding the pet and the list of tasks
+Has: one Pet, many Tasks
+Pet
+
+Stores: name, species, age, health notes
+Responsible for: representing who the care is for
+Note: passive data class — no logic needed here
+Task
+
+Stores: name, duration, priority, category (walk/feed/meds/etc.)
+Responsible for: describing a single care item
+Note: knows nothing about scheduling — just describes itself
+Scheduler
+
+Stores: nothing permanently (stateless logic)
+Responsible for: taking tasks + time budget → producing a ranked, time-fitted plan
+Key method: generate_schedule(owner) → Schedule
+Schedule
+
+Stores: ordered list of selected tasks, reasoning text
+Responsible for: representing the final output — what to display to the user
+
 
 **b. Design changes**
 
 - Did your design change during implementation?
+ Yes
 - If yes, describe at least one change and why you made it.
+ 1) added Vet Appointments and pet logs [This was my own logic - I felt this component was important to have]
+ 2) AI help me add logic issues - 
+  Added complete_task() to Owner - Original design: Owner only managed adding/removing tasks.
 
 ---
 
@@ -19,6 +65,7 @@
 **a. Constraints and priorities**
 
 - What constraints does your scheduler consider (for example: time, priority, preferences)?
+
 - How did you decide which constraints mattered most?
 
 **b. Tradeoffs**

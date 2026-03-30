@@ -22,6 +22,16 @@ Your final app should:
 - Display the plan clearly (and ideally explain the reasoning)
 - Include tests for the most important scheduling behaviors
 
+## Smarter Scheduling
+
+The scheduler has been extended with several algorithms beyond the basic daily plan:
+
+- **Priority-based greedy scheduling** — tasks are ranked by priority (high → low) then duration (short → long) before budget fitting, so the most important care always gets in first.
+- **Recurring task auto-creation** — when a `RecurringTask` is marked complete, the next occurrence (daily, weekly, or weekdays) is automatically added using `timedelta` date arithmetic.
+- **Conflict detection** — `detect_conflicts()` uses an O(n²) interval sweep to find every pair of overlapping timed tasks. `conflict_warnings()` surfaces these as plain-English strings (same-pet or cross-pet) without crashing the program.
+- **Chronological sorting** — `sort_tasks_by_time()` correctly orders 12-hour AM/PM time slots by parsing them into `datetime` objects before comparison.
+- **Flexible task filtering** — `Owner.filter_tasks()` supports AND-chained filtering by completion status, pet name, and category in a single call.
+
 ## Getting started
 
 ### Setup
