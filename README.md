@@ -32,6 +32,34 @@ The scheduler has been extended with several algorithms beyond the basic daily p
 - **Chronological sorting** — `sort_tasks_by_time()` correctly orders 12-hour AM/PM time slots by parsing them into `datetime` objects before comparison.
 - **Flexible task filtering** — `Owner.filter_tasks()` supports AND-chained filtering by completion status, pet name, and category in a single call.
 
+## Testing PawPal+
+
+### Run the test suite
+
+```bash
+python -m pytest tests/test_pawpal.py -v
+```
+
+### What the tests cover
+
+| Test class | Tests | What is verified |
+|---|---|---|
+| `TestTaskCompletion` | 1 | Completing a task flips `completed` from `False` to `True` |
+| `TestTaskAddition` | 1 | Adding tasks to an `Owner` increases the task count correctly |
+| `TestSortingByTime` | 3 | AM/PM tasks sort chronologically; untimed tasks always land last; empty-timed lists return all tasks |
+| `TestRecurringTasks` | 4 | Daily (+1 day), weekly (+7 days), and weekday (Friday → Monday) recurrence; original task is marked done |
+| `TestConflictDetection` | 5 | Same start time flagged; partial overlap flagged; back-to-back tasks not flagged; single task never self-conflicts; untimed tasks skipped |
+
+**14 tests, 14 passing.**
+
+### Confidence level
+
+**4 / 5 stars**
+
+The core scheduling behaviors — sorting, recurring task rollover, and conflict detection — are fully covered and all 14 tests pass. The main gaps are the Streamlit UI layer (untested), edge cases around malformed input (e.g. bad date strings or negative durations), and the greedy scheduler's optimality under complex budgets. For a production pet-care system those would need coverage; for a class project the critical logic is solid.
+
+---
+
 ## Getting started
 
 ### Setup

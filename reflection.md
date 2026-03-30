@@ -65,13 +65,17 @@ Responsible for: representing the final output — what to display to the user
 **a. Constraints and priorities**
 
 - What constraints does your scheduler consider (for example: time, priority, preferences)?
-
+->Time,Priority, Duration,Time slot
 - How did you decide which constraints mattered most?
+-> Scheduler should work in FIFO manner thats why we consider the time budget constraint the most. Hence first task should be process before the second task
 
 **b. Tradeoffs**
 
 - Describe one tradeoff your scheduler makes.
+->Greedy selection over optimal selection. for example, two 20-minute medium-priority tasks that together fit the budget might be skipped because a 35-minute high-priority task was taken first, leaving only 25 minutes.
 - Why is that tradeoff reasonable for this scenario?
+-> Because of its simplicity.
+-> Pet care is priority-driven by nature.
 
 ---
 
