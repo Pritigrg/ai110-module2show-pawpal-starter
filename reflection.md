@@ -84,13 +84,16 @@ Responsible for: representing the final output — what to display to the user
 **a. How you used AI**
 
 - How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
+Used AI for refactoring, debugging and analyzing different algorithms for the project 
 - What kinds of prompts or questions were most helpful?
-
+-> Add the test cases 
+-> Refactor the code or the algorithm (performance and readibility analysis)
 **b. Judgment and verification**
 
 - Describe one moment where you did not accept an AI suggestion as-is.
+-> designing the UML diagram-> it gave a basic one like adding scheduling but for the current project like a smart pet care management system it needs more than that. so I had to revise it by adding vet appointments and pet logs.
 - How did you evaluate or verify what the AI suggested?
-
+-> By reviewing the suggestion myself and I also took reference from one of the pet smart management tool.
 ---
 
 ## 4. Testing and Verification
@@ -98,13 +101,28 @@ Responsible for: representing the final output — what to display to the user
 **a. What you tested**
 
 - What behaviors did you test?
+-> I tested six core behaviors across 14 unit tests:
+  1. **Task completion** — verifying `completed` flips from `False` to `True` after `complete_task()`.
+  2. **Task addition** — verifying `owner.get_tasks()` count increases correctly.
+  3. **Chronological sorting** — verifying AM/PM tasks come out in the right order, untimed tasks land last, and an all-untimed list still returns all tasks.
+  4. **Recurring task recurrence** — verifying daily (+1 day), weekly (+7 days), and weekday (Friday → Monday, skipping the weekend) `due_date` arithmetic, and that the original task is marked completed.
+  5. **Conflict detection** — verifying same-start-time conflicts are flagged, partial overlaps are caught, back-to-back (touching) tasks are *not* flagged, a single task never self-conflicts, and untimed tasks are silently skipped.
+ 6. **UI testing** - delete/edit the task added - it fails - no UI to do it.
 - Why were these tests important?
+-> These behaviors are the core of the scheduler's correctness. Sorting ensures the UI always shows tasks in a meaningful order. Recurrence logic is the trickiest date arithmetic in the project — getting Friday→Monday wrong silently produces a Saturday task, which would never appear on a weekday schedule. Conflict detection protects against double-booking, which is the most user-visible failure mode. Without tests for these three, a bug could ship unnoticed.
 
 **b. Confidence**
 
 - How confident are you that your scheduler works correctly?
-- What edge cases would you test next if you had more time?
+-> **3.5 out of 5.** All 14 tests pass and they cover the three most critical algorithms (sorting, recurrence, conflict detection) including meaningful edge cases like the weekend skip and the back-to-back boundary. I'm less confident about the Streamlit UI layer , malformed input (e.g. a bad date string in `due_date` raises an unhandled `ValueError`)-> had to fix this,edit the already added task not possible and the greedy scheduler under tight budgets where a long high-priority task can crowd out multiple shorter ones.
 
+- What edge cases would you test next if you had more time?
+-> 
+   1. **Zero-minute budget** — call `generate_schedule()` with `available_minutes=0` and verify an empty schedule is returned.
+   2. **`complete_task()` called twice on the same `RecurringTask`** — currently adds two next-occurrences; decide if that's intentional and test accordingly.
+   3. **`filter_tasks()` with all three filters combined** — verify AND-chaining works when category + completed + pet_name are all specified at once.
+   4. **`conflict_warnings()` output content** — assert the warning string contains the correct pet name, overlap duration, and scope label (`SAME-PET` vs `CROSS-PET`).
+   5. **UI functionality**- editing or delete the added task, the adding box should be empty after adding one task rather need to overwrite.
 ---
 
 ## 5. Reflection
@@ -112,11 +130,14 @@ Responsible for: representing the final output — what to display to the user
 **a. What went well**
 
 - What part of this project are you most satisfied with?
+->UML design and converting it to an MVP code.
 
 **b. What you would improve**
 
 - If you had another iteration, what would you improve or redesign?
+-> The UI. The focus was more on logic rather than the UI, so I would add edit/delete task functionality, clear the input form after adding a task, and surface the PetLog completion rate on the dashboard. VetAppointment and PetLog exist in the backend but are invisible in app.py — a future iteration would expose them.
 
 **c. Key takeaway**
 
 - What is one important thing you learned about designing systems or working with AI on this project?
+->The first UML the AI generated was technically correct but too generic — it didn't account for recurring tasks, vet appointments, or cross-pet conflict detection. I had to push back with specifics about what a pet care system actually needs. The pattern that worked: use AI to draft, then revise based on your own understanding of the problem.

@@ -22,15 +22,29 @@ Your final app should:
 - Display the plan clearly (and ideally explain the reasoning)
 - Include tests for the most important scheduling behaviors
 
-## Smarter Scheduling
+## 📸 Demo
 
-The scheduler has been extended with several algorithms beyond the basic daily plan:
+<a href="/course_images/ai110/image.png" target="_blank"><img src='/course_images/ai110/image.png' title='PawPal App' width='' alt='PawPal App' class='center-block' /></a>
 
-- **Priority-based greedy scheduling** — tasks are ranked by priority (high → low) then duration (short → long) before budget fitting, so the most important care always gets in first.
-- **Recurring task auto-creation** — when a `RecurringTask` is marked complete, the next occurrence (daily, weekly, or weekdays) is automatically added using `timedelta` date arithmetic.
-- **Conflict detection** — `detect_conflicts()` uses an O(n²) interval sweep to find every pair of overlapping timed tasks. `conflict_warnings()` surfaces these as plain-English strings (same-pet or cross-pet) without crashing the program.
-- **Chronological sorting** — `sort_tasks_by_time()` correctly orders 12-hour AM/PM time slots by parsing them into `datetime` objects before comparison.
-- **Flexible task filtering** — `Owner.filter_tasks()` supports AND-chained filtering by completion status, pet name, and category in a single call.
+## Features
+
+### Sorting by time
+`Scheduler.sort_tasks_by_time()` and `Schedule.sort_by_time()` order tasks chronologically by their `time_slot`. Time strings are parsed into `datetime` objects before comparison so that 12-hour AM/PM values sort correctly (plain string comparison would place `"07:00 PM"` before `"10:00 AM"`). Tasks with no time slot are always placed at the end.
+
+### Priority-based greedy scheduling
+`Scheduler.generate_schedule()` ranks tasks by `(-priority, duration)` — highest priority first, shorter duration to break ties — then greedily fits them within the owner's daily time budget. This guarantees the most important care tasks are always selected first. Implemented in `_rank_tasks()` and `_fit_within_budget()`.
+
+### Conflict warnings
+`Scheduler.detect_conflicts()` compares every pair of timed tasks using interval intersection (`start_a < end_b AND start_b < end_a`). `conflict_warnings()` builds a plain-English message for each conflict, labels it `SAME-PET`, `CROSS-PET`, or `CONFLICT` based on the `pet_name` fields, and reports the exact overlap in minutes.
+
+### Daily recurrence
+`RecurringTask.next_occurrence()` returns a new pending copy of a task scheduled for its next due date. Frequency rules: `daily` adds 1 day, `weekly` adds 7 days, `weekdays` advances to the next Monday–Friday (skipping Saturday and Sunday). `Owner.complete_task()` calls this automatically whenever a `RecurringTask` is marked done.
+
+### Task filtering
+`Owner.filter_tasks()` accepts up to three independent filters — `category`, `completed` status, and `pet_name` — and AND-chains them so any combination works in a single call. Case-insensitive on `pet_name`.
+
+### Appointment tracking
+`Appointment` is a fixed-time task (e.g. vet visit) that always carries `priority=3` and `category="vet"`, enforced in `__post_init__()`. `is_upcoming()` compares `appt_date` against today so the UI can surface only future appointments.
 
 ## Testing PawPal+
 

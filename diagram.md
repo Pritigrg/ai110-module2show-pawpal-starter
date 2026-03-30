@@ -15,14 +15,23 @@ classDiagram
         +int priority
         +String category
         +bool completed
+        +String time_slot
+        +String pet_name
         +is_high_priority() bool
+        +__repr__() str
+    }
+
+    class RecurringTask {
+        +String frequency
+        +String due_date
+        +next_occurrence() RecurringTask
         +__repr__() str
     }
 
     class Appointment {
         +String appt_date
-        +String time_slot
         +String notes
+        +__post_init__()
         +is_upcoming() bool
         +__repr__() str
     }
@@ -45,8 +54,11 @@ classDiagram
         +add_task(task)
         +remove_task(task)
         +get_tasks() List~Task~
+        +filter_tasks(category, completed, pet_name) List~Task~
+        +get_recurring_tasks() List~RecurringTask~
         +add_appointment(appt)
         +get_upcoming_appointments() List~Appointment~
+        +complete_task(task)
     }
 
     class Schedule {
@@ -54,15 +66,20 @@ classDiagram
         +String reasoning
         +String schedule_date
         +total_duration() int
+        +sort_by_time() List~Task~
         +display() str
     }
 
     class Scheduler {
+        +sort_tasks_by_time(tasks) List~Task~
         +generate_schedule(owner) Schedule
+        +detect_conflicts(tasks) List~Tuple~
+        +conflict_warnings(tasks) List~String~
         -_rank_tasks(tasks) List~Task~
         -_fit_within_budget(tasks, budget) List~Task~
     }
 
+    Task <|-- RecurringTask : inherits
     Task <|-- Appointment : inherits
     Owner "1" *-- "1" Pet : has
     Owner "1" *-- "1" PetLog : has
