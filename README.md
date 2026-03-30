@@ -68,9 +68,9 @@ python -m pytest tests/test_pawpal.py -v
 
 ### Confidence level
 
-**4 / 5 stars**
+**3.5 / 5 stars**
 
-The core scheduling behaviors — sorting, recurring task rollover, and conflict detection — are fully covered and all 14 tests pass. The main gaps are the Streamlit UI layer (untested), edge cases around malformed input (e.g. bad date strings or negative durations), and the greedy scheduler's optimality under complex budgets. For a production pet-care system those would need coverage; for a class project the critical logic is solid.
+The core scheduling behaviors — sorting, recurring task rollover, and conflict detection — are fully covered and all 14 tests pass. The main gaps are the Streamlit UI layer, edge cases around malformed input (e.g. bad date strings or negative durations),edit/delete already added task, and the greedy scheduler's optimality under complex budgets.
 
 ---
 
